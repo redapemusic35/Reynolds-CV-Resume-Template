@@ -1,0 +1,134 @@
+---
+graphics: yes
+name: Montaque
+surname: Reynolds, Ph.D
+headcolor: 01416f
+position: "PhD Candidate, Philosophy"
+www: montaque-reynolds.com
+email: "montaque.reynolds@slu.edu"
+#twitter: montaquereynolds2
+github: redapemusic35
+date: "`r format(Sys.time(), '%B %Y')`"
+output: vitae::hyndman
+header-includes:
+  - \definecolor{linkscolor}{HTML}{026dbb}
+  - \usepackage{caption}
+  - \usepackage{hyperref}
+  - \usepackage{colortbl}
+  - \arrayrulecolor{white}
+  - \hypersetup{colorlinks=true, linkcolor=linkscolor, filecolor=linkscolor, urlcolor=linkscolor, urlbordercolor=linkscolor}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(vitae)
+library(tidyverse)
+library(gsheet)
+library(gt)
+library(flextable)
+```
+
+Passionate data scientist adept at using Snowflake, SQL, and dbt for data lifecycle management. Skilled in leveraging R and Python for statistical analysis and psychometrics. Proficient in data communication through visualizations, dashboards, and reports.
+
+# Education
+
+
+```{r education}
+gsheet2tbl("https://docs.google.com/spreadsheets/d/1MHDSoiSYE93L9KGdJW-PQYIUbeMzwN-REDoSBjQyOfY/edit?gid=1760172285#gid=1760172285") %>%
+  tidyr::fill(-why) %>%
+  vitae::detailed_entries(what = Degree,
+                          when = Year,
+                          where = Institution, 
+                          with = Location, 
+                          why,
+                          .protect = FALSE)
+```
+
+# Professional Appointments
+
+
+```{r work}
+gsheet2tbl("https://docs.google.com/spreadsheets/d/1MHDSoiSYE93L9KGdJW-PQYIUbeMzwN-REDoSBjQyOfY/edit?gid=161085706#gid=161085706") %>%
+tidyr::fill(-why) %>%
+  vitae::detailed_entries(what = title,
+                          when = date,
+                          where = institution,
+                          why = why,
+                          .protect = F)
+```
+
+# Software
+\begingroup
+\setlength{\parindent}{-0.5in}
+\setlength{\leftskip}{0.5in}
+
+```{r software, results='asis'}
+gsheet2tbl("https://docs.google.com/spreadsheets/d/1qbMpXHXm41q69prUVjpQFfP_mMXjORNxFP_IbAoCuKo/edit#gid=1692561333") %>%
+  select(markdown) %>%
+  mutate(markdown = str_replace_all(markdown, "\\{|\\}", ""),
+         markdown = str_replace_all(markdown, "Schmidt, A.", "**Schmidt, A.**")) %>%
+  pull(markdown) -> software
+  cat(paste(software), sep = '\n\n')
+
+```
+
+
+\endgroup
+\leavevmode\newline
+
+# Selected Publications and Presentations
+
+\begingroup
+\setlength{\parindent}{-0.5in}
+\setlength{\leftskip}{0.5in}
+
+
+```{r results='asis'}
+rbind(
+    gsheet2tbl("https://docs.google.com/spreadsheets/d/1qbMpXHXm41q69prUVjpQFfP_mMXjORNxFP_IbAoCuKo/edit#gid=0") %>%
+  filter(category == "peer-reviewed") %>%
+    select(year, markdown),
+  gsheet2tbl("https://docs.google.com/spreadsheets/d/1qbMpXHXm41q69prUVjpQFfP_mMXjORNxFP_IbAoCuKo/edit#gid=1473597883") %>%
+    slice(1:3) %>%
+    select(year, markdown),
+  gsheet2tbl("https://docs.google.com/spreadsheets/d/1qbMpXHXm41q69prUVjpQFfP_mMXjORNxFP_IbAoCuKo/edit#gid=1558956454") %>%
+    select(year, markdown) %>%
+    slice(2)
+) %>%
+  arrange(-year) %>%
+  select(markdown) %>%
+  mutate(markdown = str_replace_all(markdown, "\\{|\\}", ""),
+         markdown = str_replace_all(markdown, "Schmidt, A.", "**Schmidt, A.**")) %>%
+  slice(1,2,4,5) %>%
+  pull(markdown) -> intl
+  cat(paste(intl), sep = '\n\n')
+
+```
+
+\endgroup
+\leavevmode\newline
+
+# Skills
+
+\begingroup
+\setlength{\parindent}{-0.5in}
+\setlength{\leftskip}{0.5in}
+
+
+```{r skills, message=FALSE, warning=FALSE}
+gsheet2tbl("https://docs.google.com/spreadsheets/d/1qbMpXHXm41q69prUVjpQFfP_mMXjORNxFP_IbAoCuKo/edit#gid=885656894") %>%
+  mutate(category = ifelse(is.na(category), " ", category),
+         details = ifelse(is.na(details), " ", details
+         )) %>%
+  knitr::kable(col.names = NULL, align=c("l","l"), escape = F) %>%
+  kableExtra::row_spec(row=2, extra_latex_after = "\\arrayrulecolor{white}") %>%
+  kableExtra::column_spec(column = 1, bold = T)
+```
+
+
+\leavevmode\newline
+
+
+# Notes
+
+This CV is reproducible. All the source code behind this CV is available on \href{https://github.com/acircleda/CV}{my Github repo}.
